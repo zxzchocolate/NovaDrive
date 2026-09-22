@@ -1,1061 +1,720 @@
-```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NovaDrive</title>
-
 <script src="https://js.puter.com/v2/"></script>
-
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
-    :root {
-        --bg: #0b0d12;
-        --panel: #11141b;
-        --panel2: #171a22;
-        --border: #272c38;
-        --text: #f5f7fb;
-        --muted: #9299a8;
-        --accent: #7c5cff;
-        --accent2: #6244e8;
-        --danger: #ff5d6c;
-    }
-
-    body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        height: 100vh;
-        overflow: hidden;
-    }
-
-    button,
-    input {
-        font: inherit;
-    }
-
-    button {
-        cursor: pointer;
-    }
-
-    .app {
-        display: flex;
-        height: 100vh;
-    }
-
-    /* SIDEBAR */
-
-    .sidebar {
-        width: 245px;
-        background: #0d1016;
-        border-right: 1px solid var(--border);
-        padding: 22px 14px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 20px;
-        font-weight: 800;
-        padding: 0 10px 25px;
-    }
-
-    .logo-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #8d6cff, #5c3ee9);
-        display: grid;
-        place-items: center;
-        font-weight: 900;
-    }
-
-    .nav {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .nav button {
-        background: transparent;
-        color: var(--muted);
-        border: 0;
-        padding: 11px 13px;
-        border-radius: 9px;
-        text-align: left;
-        font-size: 14px;
-    }
-
-    .nav button:hover,
-    .nav button.active {
-        background: var(--panel2);
-        color: white;
-    }
-
-    .storage {
-        margin-top: auto;
-        padding: 15px 10px;
-    }
-
-    .storage-title {
-        color: var(--muted);
-        font-size: 12px;
-        margin-bottom: 9px;
-    }
-
-    .storage-bar {
-        height: 6px;
-        background: #242936;
-        border-radius: 99px;
-        overflow: hidden;
-    }
-
-    .storage-fill {
-        width: 18%;
-        height: 100%;
-        background: var(--accent);
-        border-radius: inherit;
-    }
-
-    .storage-text {
-        margin-top: 8px;
-        font-size: 11px;
-        color: var(--muted);
-    }
-
-    /* MAIN */
-
-    .main {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .topbar {
-        height: 72px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 0 24px;
-    }
-
-    .search {
-        flex: 1;
-        max-width: 550px;
-        position: relative;
-    }
-
-    .search input {
-        width: 100%;
-        background: var(--panel);
-        border: 1px solid var(--border);
-        color: white;
-        padding: 11px 15px 11px 40px;
-        border-radius: 10px;
-        outline: none;
-    }
-
-    .search input:focus {
-        border-color: var(--accent);
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 14px;
-        top: 10px;
-        color: var(--muted);
-    }
-
-    .top-actions {
-        margin-left: auto;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .icon-btn {
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: white;
-        border-radius: 9px;
-        width: 39px;
-        height: 39px;
-    }
-
-    .icon-btn:hover {
-        background: var(--panel2);
-    }
-
-    .user {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #ff9a62, #ff5caa);
-        display: grid;
-        place-items: center;
-        font-weight: 800;
-        font-size: 13px;
-    }
-
-    .content {
-        flex: 1;
-        overflow: auto;
-        padding: 25px;
-    }
-
-    .toolbar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 18px;
-    }
-
-    .breadcrumb {
-        font-size: 14px;
-        color: var(--muted);
-        flex: 1;
-    }
-
-    .breadcrumb span {
-        color: white;
-        cursor: pointer;
-    }
-
-    .primary {
-        border: 0;
-        background: var(--accent);
-        color: white;
-        padding: 10px 15px;
-        border-radius: 9px;
-        font-weight: 700;
-    }
-
-    .primary:hover {
-        background: var(--accent2);
-    }
-
-    .secondary {
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: white;
-        padding: 10px 13px;
-        border-radius: 9px;
-    }
-
-    /* FILE AREA */
-
-    .section-title {
-        font-size: 17px;
-        font-weight: 700;
-        margin-bottom: 13px;
-    }
-
-    .file-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 13px;
-    }
-
-    .file-card {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 17px;
-        min-height: 150px;
-        transition: .15s;
-        position: relative;
-    }
-
-    .file-card:hover {
-        border-color: #3a4050;
-        transform: translateY(-1px);
-    }
-
-    .file-card.selected {
-        border-color: var(--accent);
-    }
-
-    .file-icon {
-        font-size: 39px;
-        margin-bottom: 13px;
-    }
-
-    .file-name {
-        font-size: 14px;
-        font-weight: 650;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .file-meta {
-        color: var(--muted);
-        font-size: 11px;
-        margin-top: 6px;
-    }
-
-    .more {
-        position: absolute;
-        right: 9px;
-        top: 9px;
-        border: 0;
-        background: transparent;
-        color: var(--muted);
-        font-size: 18px;
-    }
-
-    .more:hover {
-        color: white;
-    }
-
-    .empty {
-        text-align: center;
-        padding: 80px 20px;
-        color: var(--muted);
-    }
-
-    .empty-icon {
-        font-size: 55px;
-        margin-bottom: 12px;
-    }
-
-    .loading {
-        text-align: center;
-        color: var(--muted);
-        padding: 50px;
-    }
-
-    /* MODAL */
-
-    .modal-bg {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,.65);
-        backdrop-filter: blur(5px);
-        place-items: center;
-        z-index: 50;
-    }
-
-    .modal-bg.show {
-        display: grid;
-    }
-
-    .modal {
-        width: min(420px, calc(100vw - 30px));
-        background: #151820;
-        border: 1px solid var(--border);
-        border-radius: 15px;
-        padding: 22px;
-        box-shadow: 0 25px 70px rgba(0,0,0,.5);
-    }
-
-    .modal h2 {
-        margin: 0 0 17px;
-        font-size: 19px;
-    }
-
-    .modal input {
-        width: 100%;
-        background: #0d1016;
-        color: white;
-        border: 1px solid var(--border);
-        padding: 11px;
-        border-radius: 9px;
-        outline: none;
-    }
-
-    .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        margin-top: 18px;
-    }
-
-    @media(max-width: 700px) {
-        .sidebar {
-            width: 65px;
-            padding: 15px 8px;
-        }
-
-        .logo {
-            justify-content: center;
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .logo span,
-        .nav button span,
-        .storage {
-            display: none;
-        }
-
-        .nav button {
-            text-align: center;
-            font-size: 20px;
-        }
-
-        .content {
-            padding: 16px;
-        }
-
-        .topbar {
-            padding: 0 14px;
-        }
-
-        .file-grid {
-            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-        }
-    }
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#0b0d0e;color:#d7d9da;font-family:"SFMono-Regular","JetBrains Mono","Cascadia Code",monospace;font-size:14px}
+body{padding:0}
+#app{width:100%;height:100%;display:flex;flex-direction:column}
+#tabs{height:36px;background:#111315;border-bottom:1px solid #292d30;display:flex;align-items:stretch;padding:0 6px;gap:2px}
+.tab{height:36px;min-width:150px;max-width:240px;background:#111315;color:#777d81;border:0;border-right:1px solid #292d30;display:flex;align-items:center;padding:0 8px;cursor:pointer}
+.tab:hover{background:#171a1c;color:#aaa}
+.tab.active{background:#0b0d0e;color:#d7d9da}
+.tab-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tab-close{width:22px;text-align:center;color:#666;background:transparent;border:0;padding:0;font:inherit}
+.tab-close:hover{color:#ff6b6b}
+#newTab{height:36px;width:36px;background:transparent;border:0;color:#777d81;font:inherit;font-size:18px;cursor:pointer}
+#newTab:hover{background:#171a1c;color:#9fef00}
+#terminals{flex:1;min-height:0;position:relative}
+.terminal{display:none;width:100%;height:100%;overflow:auto;padding:20px}
+.terminal.active{display:block}
+.line{min-height:24px;line-height:24px;white-space:pre-wrap;word-break:break-word}
+.prompt{color:#9fef00}
+.dim{color:#666}
+.file{cursor:pointer}
+.file:hover{background:#171b1d}
+.selected{background:#1d2920;color:#9fef00}
+.dir{color:#8ab4f8}
+.error{color:#ff6b6b}
+.inputline{display:flex;align-items:center}
+input{flex:1;background:transparent;border:0;outline:0;color:#d7d9da;font:inherit;padding:0;margin:0}
+input::placeholder{color:#555}
+.drop{position:fixed;inset:0;background:#0b0d0e;display:none;align-items:center;justify-content:center;color:#9fef00;font-size:18px;z-index:100}
+.drop.active{display:flex}
 </style>
 </head>
-
 <body>
 
-<div class="app">
+<div id="app">
 
-    <aside class="sidebar">
-        <div class="logo">
-            <div class="logo-icon">N</div>
-            <span>NovaDrive</span>
-        </div>
+<div id="tabs">
+<button id="newTab">+</button>
+</div>
 
-        <div class="nav">
-            <button class="active" onclick="goHome()">☁️ <span>My Drive</span></button>
-            <button onclick="showShared()">👥 <span>Shared</span></button>
-            <button onclick="showRecent()">🕘 <span>Recent</span></button>
-        </div>
-
-        <div class="storage">
-            <div class="storage-title">NovaDrive Storage</div>
-            <div class="storage-bar">
-                <div class="storage-fill"></div>
-            </div>
-            <div class="storage-text">Storage is provided by Puter</div>
-        </div>
-    </aside>
-
-    <main class="main">
-
-        <header class="topbar">
-
-            <div class="search">
-                <div class="search-icon">⌕</div>
-                <input
-                    id="searchInput"
-                    placeholder="Search your files..."
-                    oninput="renderFiles()"
-                >
-            </div>
-
-            <div class="top-actions">
-                <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">☼</button>
-                <div class="user" id="userAvatar">N</div>
-            </div>
-
-        </header>
-
-        <section class="content">
-
-            <div class="toolbar">
-
-                <div class="breadcrumb" id="breadcrumb">
-                    <span onclick="goHome()">My Drive</span>
-                </div>
-
-                <button class="secondary" onclick="newFolder()">＋ Folder</button>
-                <button class="primary" onclick="document.getElementById('fileInput').click()">
-                    ↑ Upload
-                </button>
-
-                <input
-                    id="fileInput"
-                    type="file"
-                    multiple
-                    hidden
-                    onchange="uploadFiles(this.files)"
-                >
-
-            </div>
-
-            <div class="section-title" id="sectionTitle">My Drive</div>
-
-            <div id="fileArea">
-                <div class="loading">Loading your files...</div>
-            </div>
-
-        </section>
-
-    </main>
+<div id="terminals"></div>
 
 </div>
 
-<!-- MODAL -->
-
-<div class="modal-bg" id="modalBg">
-    <div class="modal">
-
-        <h2 id="modalTitle">New Folder</h2>
-
-        <input
-            id="modalInput"
-            placeholder="Folder name"
-            autocomplete="off"
-        >
-
-        <div class="modal-actions">
-            <button class="secondary" onclick="closeModal()">Cancel</button>
-            <button class="primary" onclick="submitModal()">Create</button>
-        </div>
-
-    </div>
-</div>
+<div id="drop" class="drop">DROP FILES HERE</div>
 
 <script>
-let currentPath = "";
-let currentFiles = [];
-let modalMode = "folder";
-let modalTarget = null;
+let tabs=[];
+let activeTab=0;
+let nextTabId=1;
 
-async function init() {
-    try {
-        if (puter.auth && !puter.auth.isSignedIn()) {
-            await puter.auth.signIn();
-        }
+function createTab(){
+const tab={
+id:nextTabId++,
+name:"Terminal "+nextTabId,
+path:".",
+files:[],
+selected:null,
+history:[],
+historyIndex:0
+};
 
-        const user = await puter.auth.getUser();
-
-        if (user) {
-            const name = user.username || user.email || "N";
-            document.getElementById("userAvatar").textContent =
-                name.charAt(0).toUpperCase();
-        }
-
-        await loadFiles();
-    } catch (error) {
-        console.error(error);
-        showError(error);
-    }
+tabs.push(tab);
+activeTab=tabs.length-1;
+renderTabs();
+renderTerminals();
+load();
 }
 
-async function loadFiles() {
-    const area = document.getElementById("fileArea");
+function closeTab(index){
+if(tabs.length===1)return;
 
-    area.innerHTML = `<div class="loading">Loading...</div>`;
+tabs.splice(index,1);
 
-    try {
-        currentFiles = await puter.fs.readdir(currentPath || ".");
-
-        renderFiles();
-        updateBreadcrumb();
-
-    } catch (error) {
-        console.error(error);
-        area.innerHTML = `
-            <div class="empty">
-                <div class="empty-icon">⚠️</div>
-                <div>Couldn't load this folder.</div>
-                <button class="secondary" style="margin-top:15px" onclick="loadFiles()">
-                    Try again
-                </button>
-            </div>
-        `;
-    }
+if(activeTab>=tabs.length){
+activeTab=tabs.length-1;
 }
 
-function renderFiles() {
-
-    const area = document.getElementById("fileArea");
-    const query = document.getElementById("searchInput").value
-        .toLowerCase()
-        .trim();
-
-    let files = currentFiles.filter(file => {
-        const name = file.name || "";
-        return name.toLowerCase().includes(query);
-    });
-
-    files.sort((a, b) => {
-
-        const ad = a.is_dir || a.type === "directory";
-        const bd = b.is_dir || b.type === "directory";
-
-        if (ad && !bd) return -1;
-        if (!ad && bd) return 1;
-
-        return (a.name || "").localeCompare(b.name || "");
-    });
-
-    if (!files.length) {
-        area.innerHTML = `
-            <div class="empty">
-                <div class="empty-icon">☁️</div>
-                <div>${query ? "No matching files." : "This folder is empty."}</div>
-            </div>
-        `;
-        return;
-    }
-
-    const grid = document.createElement("div");
-    grid.className = "file-grid";
-
-    for (const file of files) {
-
-        const isDir =
-            file.is_dir ||
-            file.type === "directory" ||
-            file.type === "dir";
-
-        const card = document.createElement("div");
-        card.className = "file-card";
-
-        card.onclick = () => {
-
-            if (isDir) {
-                openFolder(file.name);
-            }
-
-        };
-
-        card.ondblclick = () => {
-            if (!isDir) {
-                downloadFile(file);
-            }
-        };
-
-        const icon = isDir
-            ? "📁"
-            : getFileIcon(file.name);
-
-        const size = isDir
-            ? "Folder"
-            : formatBytes(file.size);
-
-        card.innerHTML = `
-            <button class="more" onclick="event.stopPropagation(); openMenu(${JSON.stringify(file.name).replace(/"/g, '&quot;')}, ${isDir})">
-                ⋮
-            </button>
-
-            <div class="file-icon">${icon}</div>
-            <div class="file-name" title="${escapeHtml(file.name)}">
-                ${escapeHtml(file.name)}
-            </div>
-            <div class="file-meta">${size}</div>
-        `;
-
-        grid.appendChild(card);
-    }
-
-    area.innerHTML = "";
-    area.appendChild(grid);
+renderTabs();
+renderTerminals();
 }
 
-function getFileIcon(name) {
-
-    const ext = name.split(".").pop().toLowerCase();
-
-    const icons = {
-        png: "🖼️",
-        jpg: "🖼️",
-        jpeg: "🖼️",
-        gif: "🖼️",
-        webp: "🖼️",
-        svg: "🎨",
-
-        mp3: "🎵",
-        wav: "🎵",
-        ogg: "🎵",
-        flac: "🎵",
-
-        mp4: "🎬",
-        mov: "🎬",
-        webm: "🎬",
-        mkv: "🎬",
-
-        pdf: "📕",
-
-        zip: "📦",
-        rar: "📦",
-        "7z": "📦",
-
-        js: "🟨",
-        html: "🌐",
-        css: "🎨",
-        json: "🧩",
-
-        txt: "📄",
-        md: "📝",
-
-        doc: "📘",
-        docx: "📘",
-
-        xls: "📗",
-        xlsx: "📗",
-
-        ppt: "📙",
-        pptx: "📙"
-    };
-
-    return icons[ext] || "📄";
+function switchTab(index){
+activeTab=index;
+renderTabs();
+renderTerminals();
 }
 
-function formatBytes(bytes) {
-
-    if (!bytes || bytes === 0) return "0 B";
-
-    const units = ["B", "KB", "MB", "GB", "TB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-    return `${(bytes / Math.pow(1024, i)).toFixed(i ? 1 : 0)} ${units[i]}`;
+function current(){
+return tabs[activeTab];
 }
 
-async function uploadFiles(files) {
-
-    if (!files.length) return;
-
-    try {
-
-        await puter.fs.upload(
-            files,
-            currentPath || ".",
-            {
-                dedupeName: true
-            }
-        );
-
-        await loadFiles();
-
-    } catch (error) {
-        console.error(error);
-        alert("Upload failed: " + error.message);
-    }
-
-    document.getElementById("fileInput").value = "";
-}
-
-async function newFolder() {
-
-    openModal(
-        "New Folder",
-        "Folder name",
-        "folder"
-    );
-}
-
-function openModal(title, placeholder, mode, target = null) {
-
-    modalMode = mode;
-    modalTarget = target;
-
-    document.getElementById("modalTitle").textContent = title;
-    document.getElementById("modalInput").placeholder = placeholder;
-    document.getElementById("modalInput").value = "";
-
-    document
-        .getElementById("modalBg")
-        .classList.add("show");
-
-    setTimeout(() => {
-        document.getElementById("modalInput").focus();
-    }, 50);
-}
-
-function closeModal() {
-    document.getElementById("modalBg").classList.remove("show");
-}
-
-async function submitModal() {
-
-    const input = document.getElementById("modalInput");
-    const name = input.value.trim();
-
-    if (!name) return;
-
-    try {
-
-        if (modalMode === "folder") {
-
-            const path = joinPath(currentPath, name);
-
-            await puter.fs.mkdir(path);
-
-        } else if (modalMode === "rename") {
-
-            const oldPath = joinPath(currentPath, modalTarget);
-            const newPath = joinPath(currentPath, name);
-
-            await puter.fs.rename(oldPath, newPath);
-        }
-
-        closeModal();
-        await loadFiles();
-
-    } catch (error) {
-        alert(error.message || "Operation failed.");
-    }
-}
-
-async function openFolder(name) {
-
-    currentPath = joinPath(currentPath, name);
-
-    await loadFiles();
-}
-
-function goHome() {
-
-    currentPath = "";
-    document.getElementById("searchInput").value = "";
-
-    loadFiles();
-}
-
-function updateBreadcrumb() {
-
-    const breadcrumb = document.getElementById("breadcrumb");
-
-    const parts = currentPath
-        ? currentPath.split("/").filter(Boolean)
-        : [];
-
-    let html = `<span onclick="goHome()">My Drive</span>`;
-
-    let path = "";
-
-    parts.forEach((part, index) => {
-
-        path = path
-            ? path + "/" + part
-            : part;
-
-        const safePath = path.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-
-        html += `
-            <span style="margin:0 7px">›</span>
-            <span onclick="navigateTo('${safePath}')">
-                ${escapeHtml(part)}
-            </span>
-        `;
-    });
-
-    breadcrumb.innerHTML = html;
-    document.getElementById("sectionTitle").textContent =
-        parts.length ? parts[parts.length - 1] : "My Drive";
-}
-
-function navigateTo(path) {
-
-    currentPath = path;
-    loadFiles();
-}
-
-function joinPath(a, b) {
-
-    if (!a) return b;
-
-    return a.replace(/\/$/, "") + "/" + b;
-}
-
-async function downloadFile(file) {
-
-    try {
-
-        const path = file.path || joinPath(currentPath, file.name);
-
-        const url = await puter.fs.getReadURL(path);
-
-        const a = document.createElement("a");
-
-        a.href = url;
-        a.download = file.name;
-        a.target = "_blank";
-
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-    } catch (error) {
-        alert("Couldn't download file: " + error.message);
-    }
-}
-
-function openMenu(name, isDir) {
-
-    const action = prompt(
-        `${name}\n\n` +
-        `Type one of:\n` +
-        `rename\n` +
-        `${isDir ? "" : "download\n"}` +
-        `delete`
-    );
-
-    if (!action) return;
-
-    if (action.toLowerCase() === "rename") {
-
-        openModal(
-            "Rename",
-            "New name",
-            "rename",
-            name
-        );
-
-    } else if (
-        action.toLowerCase() === "download" &&
-        !isDir
-    ) {
-
-        const file = currentFiles.find(f => f.name === name);
-
-        if (file) downloadFile(file);
-
-    } else if (action.toLowerCase() === "delete") {
-
-        deleteItem(name);
-    }
-}
-
-async function deleteItem(name) {
-
-    if (!confirm(`Delete "${name}"?`)) return;
-
-    try {
-
-        await puter.fs.delete(
-            joinPath(currentPath, name)
-        );
-
-        await loadFiles();
-
-    } catch (error) {
-        alert("Delete failed: " + error.message);
-    }
-}
-
-async function showShared() {
-
-    try {
-
-        const shared = await puter.fs.listShared();
-
-        currentFiles = shared || [];
-
-        document.getElementById("sectionTitle").textContent =
-            "Shared with me";
-
-        document.getElementById("breadcrumb").innerHTML =
-            `<span onclick="goHome()">My Drive</span>
-             <span style="margin:0 7px">›</span>
-             <span>Shared</span>`;
-
-        renderFiles();
-
-    } catch (error) {
-
-        alert("Couldn't load shared files: " + error.message);
-    }
-}
-
-async function showRecent() {
-
-    // Puter does not expose a universal "recent files" filesystem
-    // endpoint, so NovaDrive currently shows the current directory.
-    await goHome();
-
-    document.getElementById("sectionTitle").textContent =
-        "Recent";
-}
-
-function toggleTheme() {
-
-    const light = document.body.dataset.theme === "light";
-
-    if (!light) {
-
-        document.body.dataset.theme = "light";
-
-        document.documentElement.style.setProperty("--bg", "#f4f5f8");
-        document.documentElement.style.setProperty("--panel", "#ffffff");
-        document.documentElement.style.setProperty("--panel2", "#eef0f5");
-        document.documentElement.style.setProperty("--border", "#dfe2e8");
-        document.documentElement.style.setProperty("--text", "#151821");
-        document.documentElement.style.setProperty("--muted", "#697080");
-
-    } else {
-
-        document.body.dataset.theme = "dark";
-
-        document.documentElement.style.setProperty("--bg", "#0b0d12");
-        document.documentElement.style.setProperty("--panel", "#11141b");
-        document.documentElement.style.setProperty("--panel2", "#171a22");
-        document.documentElement.style.setProperty("--border", "#272c38");
-        document.documentElement.style.setProperty("--text", "#f5f7fb");
-        document.documentElement.style.setProperty("--muted", "#9299a8");
-    }
-}
-
-function showError(error) {
-
-    document.getElementById("fileArea").innerHTML = `
-        <div class="empty">
-            <div class="empty-icon">⚠️</div>
-            <div>${escapeHtml(error.message || "Something went wrong.")}</div>
-        </div>
-    `;
-}
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-document.getElementById("modalInput").addEventListener("keydown", e => {
-
-    if (e.key === "Enter") {
-        submitModal();
-    }
-
-    if (e.key === "Escape") {
-        closeModal();
-    }
+function renderTabs(){
+const tabsBar=document.getElementById("tabs");
+tabsBar.innerHTML="";
+
+tabs.forEach((tab,index)=>{
+const element=document.createElement("div");
+element.className="tab"+(index===activeTab?" active":"");
+
+const name=document.createElement("span");
+name.className="tab-name";
+name.textContent=tab.name;
+
+const close=document.createElement("button");
+close.className="tab-close";
+close.textContent="×";
+
+close.onclick=e=>{
+e.stopPropagation();
+closeTab(index);
+};
+
+element.appendChild(name);
+element.appendChild(close);
+
+element.onclick=()=>{
+switchTab(index);
+};
+
+tabsBar.appendChild(element);
 });
 
-document.getElementById("modalBg").addEventListener("click", e => {
+const plus=document.createElement("button");
+plus.id="newTab";
+plus.textContent="+";
+plus.onclick=createTab;
+tabsBar.appendChild(plus);
+}
 
-    if (e.target.id === "modalBg") {
-        closeModal();
-    }
+function renderTerminals(){
+const container=document.getElementById("terminals");
+container.innerHTML="";
+
+tabs.forEach((tab,index)=>{
+const terminal=document.createElement("div");
+
+terminal.className="terminal"+
+(index===activeTab?" active":"");
+
+terminal.id="terminal-"+tab.id;
+
+container.appendChild(terminal);
 });
 
-init();
+renderCurrent();
+}
+
+function terminalElement(){
+return document.getElementById(
+"terminal-"+current().id
+);
+}
+
+function pathText(){
+const tab=current();
+
+return tab.path==="."
+?"~"
+:"~/"+tab.path.replace(/^\.?\//,"");
+}
+
+function print(text="",className=""){
+const terminal=terminalElement();
+
+const line=document.createElement("div");
+line.className="line "+className;
+line.textContent=text;
+
+terminal.appendChild(line);
+
+terminal.scrollTop=terminal.scrollHeight;
+}
+
+function promptLine(text){
+const terminal=terminalElement();
+
+const line=document.createElement("div");
+line.className="line";
+
+line.innerHTML=
+'<span class="prompt">nova@novadrive</span>'+
+'<span class="dim">:</span>'+
+escapeHTML(pathText())+
+'<span class="dim">$ </span>'+
+escapeHTML(text);
+
+terminal.appendChild(line);
+
+terminal.scrollTop=terminal.scrollHeight;
+}
+
+function createInput(){
+const terminal=terminalElement();
+
+const inputLine=document.createElement("div");
+inputLine.className="inputline";
+
+const prompt=document.createElement("span");
+prompt.className="prompt";
+prompt.textContent="nova@novadrive";
+
+const colon=document.createElement("span");
+colon.className="dim";
+colon.textContent=":"+pathText()+"$ ";
+
+const input=document.createElement("input");
+input.autocomplete="off";
+input.spellcheck=false;
+input.placeholder="type help";
+
+input.addEventListener("keydown",async e=>{
+const tab=current();
+
+if(e.key==="Enter"){
+const value=input.value;
+input.value="";
+await run(value);
+}
+
+if(e.key==="ArrowUp"){
+if(tab.historyIndex>0){
+tab.historyIndex--;
+input.value=tab.history[tab.historyIndex];
+}
+}
+
+if(e.key==="ArrowDown"){
+if(tab.historyIndex<tab.history.length-1){
+tab.historyIndex++;
+input.value=tab.history[tab.historyIndex];
+}else{
+tab.historyIndex=tab.history.length;
+input.value="";
+}
+}
+});
+
+inputLine.appendChild(prompt);
+inputLine.appendChild(colon);
+inputLine.appendChild(input);
+
+terminal.appendChild(inputLine);
+
+setTimeout(()=>input.focus(),0);
+}
+
+function escapeHTML(text){
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
+}
+
+function nameOf(file){
+return file.name||file.filename||"unknown";
+}
+
+function pathOf(file){
+return file.path||file.fullPath||nameOf(file);
+}
+
+function isDir(file){
+return file.is_dir===true||
+file.isDirectory===true||
+file.type==="directory";
+}
+
+function sizeOf(file){
+let size=Number(file.size||0);
+
+if(!size)return "-";
+
+const units=["B","KB","MB","GB","TB"];
+let i=0;
+
+while(size>=1024&&i<units.length-1){
+size/=1024;
+i++;
+}
+
+return size.toFixed(size>=10?0:1)+" "+units[i];
+}
+
+async function load(){
+const tab=current();
+
+try{
+tab.files=await puter.fs.readdir(tab.path);
+renderCurrent();
+}catch(e){
+print(
+"error: "+(e.message||"unable to read directory"),
+"error"
+);
+}
+}
+
+function renderCurrent(){
+const tab=current();
+const terminal=terminalElement();
+
+terminal.innerHTML="";
+
+print("NovaDrive");
+print("");
+
+if(!tab.files.length){
+print("empty directory","dim");
+}else{
+tab.files.forEach((file,index)=>{
+const line=document.createElement("div");
+
+line.className="line file";
+
+if(tab.selected===index){
+line.classList.add("selected");
+}
+
+const name=nameOf(file);
+
+line.textContent=
+(isDir(file)?"[DIR] ":"      ")+
+name+
+(isDir(file)?"/":"")+
+"    "+
+sizeOf(file);
+
+line.onclick=()=>{
+tab.selected=index;
+renderCurrent();
+};
+
+line.ondblclick=()=>{
+openFile(file);
+};
+
+terminal.appendChild(line);
+});
+}
+
+print("");
+
+createInput();
+}
+
+async function openFile(file){
+const tab=current();
+
+if(isDir(file)){
+tab.path=
+tab.path==="."
+?nameOf(file)
+:tab.path+"/"+nameOf(file);
+
+tab.selected=null;
+
+updateTabName();
+
+await load();
+
+return;
+}
+
+try{
+const url=
+await puter.fs.getReadURL(pathOf(file));
+
+window.open(url,"_blank");
+}catch(e){
+print(
+"error: "+(e.message||"cannot open file"),
+"error"
+);
+}
+}
+
+function updateTabName(){
+const tab=current();
+
+const tabElement=
+document.querySelectorAll(".tab")[activeTab];
+
+if(tabElement){
+const name=tabElement.querySelector(".tab-name");
+
+name.textContent=
+tab.path==="."
+?"Terminal"
+:"~/"+tab.path;
+}
+}
+
+async function upload(){
+const tab=current();
+
+const input=document.createElement("input");
+
+input.type="file";
+input.multiple=true;
+
+input.onchange=async()=>{
+for(const file of input.files){
+try{
+await puter.fs.upload(
+file,
+tab.path,
+{dedupeName:true}
+);
+
+print("uploaded: "+file.name);
+}catch(e){
+print(
+"error: "+(e.message||"upload failed"),
+"error"
+);
+}
+}
+
+await load();
+};
+
+input.click();
+}
+
+async function mkdir(name){
+const tab=current();
+
+if(!name){
+print("usage: mkdir <name>","error");
+return;
+}
+
+try{
+await puter.fs.mkdir(
+tab.path==="."
+?name
+:tab.path+"/"+name
+);
+
+print("created: "+name);
+
+await load();
+}catch(e){
+print(
+"error: "+(e.message||"mkdir failed"),
+"error"
+);
+}
+}
+
+async function remove(){
+const tab=current();
+
+if(tab.selected===null){
+print("no file selected","error");
+return;
+}
+
+const file=tab.files[tab.selected];
+
+try{
+await puter.fs.delete(pathOf(file));
+
+print("removed: "+nameOf(file));
+
+tab.selected=null;
+
+await load();
+}catch(e){
+print(
+"error: "+(e.message||"remove failed"),
+"error"
+);
+}
+}
+
+async function renameFile(name){
+const tab=current();
+
+if(tab.selected===null){
+print("no file selected","error");
+return;
+}
+
+if(!name){
+print("usage: rename <new-name>","error");
+return;
+}
+
+const file=tab.files[tab.selected];
+
+const parent=
+tab.path==="."
+?""
+:tab.path+"/";
+
+try{
+await puter.fs.rename(
+pathOf(file),
+parent+name
+);
+
+tab.selected=null;
+
+await load();
+}catch(e){
+print(
+"error: "+(e.message||"rename failed"),
+"error"
+);
+}
+}
+
+function help(){
+print("help");
+print("ls                 list files");
+print("cd <dir>           enter directory");
+print("cd ..              go back");
+print("open               open selected file");
+print("upload             upload files");
+print("mkdir <name>       create directory");
+print("rename <name>      rename selected file");
+print("rm                 delete selected file");
+print("clear              clear terminal");
+print("pwd                show current path");
+print("newtab             open new tab");
+print("closetab           close current tab");
+print("help               show commands");
+}
+
+async function run(raw){
+const input=raw.trim();
+
+if(!input)return;
+
+const tab=current();
+
+tab.history.push(input);
+tab.historyIndex=tab.history.length;
+
+promptLine(input);
+
+const parts=input.split(/\s+/);
+const cmd=parts.shift().toLowerCase();
+const arg=parts.join(" ");
+
+if(cmd==="help"){
+help();
+}else if(cmd==="ls"){
+await load();
+}else if(cmd==="pwd"){
+print(
+tab.path==="."
+?"/"
+:"/"+tab.path
+);
+}else if(cmd==="clear"){
+renderCurrent();
+}else if(cmd==="upload"){
+await upload();
+}else if(cmd==="mkdir"){
+await mkdir(arg);
+}else if(cmd==="rename"){
+await renameFile(arg);
+}else if(cmd==="rm"){
+await remove();
+}else if(cmd==="open"){
+if(tab.selected!==null){
+await openFile(tab.files[tab.selected]);
+}else{
+print("no file selected","error");
+}
+}else if(cmd==="newtab"){
+createTab();
+}else if(cmd==="closetab"){
+closeTab(activeTab);
+}else if(cmd==="cd"){
+if(!arg){
+tab.path=".";
+}else if(arg===".."){
+if(
+tab.path!=="."&&
+tab.path.includes("/")
+){
+tab.path=
+tab.path
+.split("/")
+.slice(0,-1)
+.join("/")||".";
+}else{
+tab.path=".";
+}
+}else{
+tab.path=
+tab.path==="."
+?arg
+:tab.path+"/"+arg;
+}
+
+tab.selected=null;
+
+updateTabName();
+
+await load();
+}else{
+print(
+"command not found: "+cmd,
+"error"
+);
+}
+}
+
+document.addEventListener("keydown",e=>{
+if(
+(e.ctrlKey||e.metaKey)&&
+e.key.toLowerCase()==="t"
+){
+e.preventDefault();
+createTab();
+}
+
+if(
+(e.ctrlKey||e.metaKey)&&
+e.key.toLowerCase()==="w"
+){
+e.preventDefault();
+
+if(tabs.length>1){
+closeTab(activeTab);
+}
+}
+});
+
+const drop=document.getElementById("drop");
+
+document.addEventListener("dragenter",e=>{
+if(
+e.dataTransfer&&
+Array.from(e.dataTransfer.types)
+.includes("Files")
+){
+drop.classList.add("active");
+}
+});
+
+document.addEventListener(
+"dragover",
+e=>e.preventDefault()
+);
+
+document.addEventListener(
+"dragleave",
+e=>{
+if(
+e.clientX<=0||
+e.clientY<=0||
+e.clientX>=window.innerWidth||
+e.clientY>=window.innerHeight
+){
+drop.classList.remove("active");
+}
+});
+
+document.addEventListener(
+"drop",
+async e=>{
+e.preventDefault();
+
+drop.classList.remove("active");
+
+if(!e.dataTransfer.files.length)return;
+
+const tab=current();
+
+for(const file of e.dataTransfer.files){
+try{
+await puter.fs.upload(
+file,
+tab.path,
+{dedupeName:true}
+);
+
+print("uploaded: "+file.name);
+}catch(err){
+print(
+"error: "+(err.message||"upload failed"),
+"error"
+);
+}
+}
+
+await load();
+});
+
+async function start(){
+try{
+if(!puter.auth.isSignedIn()){
+await puter.auth.signIn();
+}
+
+createTab();
+
+}catch(e){
+console.error(e);
+}
+}
+
+start();
 </script>
-
-<footer style="
-    position:fixed;
-    bottom:7px;
-    right:12px;
-    font-size:10px;
-    color:#697080;
-    pointer-events:none;
-">
-    Powered by Puter
-</footer>
-
 </body>
 </html>
-```
